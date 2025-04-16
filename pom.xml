@@ -15,7 +15,7 @@
 	<description>Order Service</description>
 	<properties>
 		<java.version>21</java.version>
-		<sonar.organization>lucasmartins007</sonar.organization>
+		<sonar.organization>aulas-engenharia-de-software</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
