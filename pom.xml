@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.github.awsservices</groupId>
-	<artifactId>order</artifactId>
+	<artifactId>order-microservice</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>order</name>
+	<name>order-microservice</name>
 	<description>Order Service</description>
 	<properties>
 		<java.version>21</java.version>
