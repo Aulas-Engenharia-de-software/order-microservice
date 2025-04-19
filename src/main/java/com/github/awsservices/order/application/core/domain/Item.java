@@ -1,22 +1,12 @@
 package com.github.awsservices.order.application.core.domain;
 
+import java.math.BigDecimal;
+
 public class Item {
-
-    private int id;
-
+    private Long id;
     private String sku;
-
     private String description;
-
-    private String price;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    private BigDecimal price;
 
     public String getSku() {
         return sku;
@@ -34,11 +24,19 @@ public class Item {
         this.description = description;
     }
 
-    public String getPrice() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 }
