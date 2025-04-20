@@ -13,14 +13,15 @@ resource "aws_ecs_task_definition" "order" {
   cpu                      = var.ecs_config.cpu
   memory                   = var.ecs_config.memory
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.sns_task_role.arn
 
   container_definitions = jsonencode([
     {
-      name         = "${var.app_name}-container",
-      image        = "${var.aws_account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.ecr_config.name}:latest",
-      essential    = true,
-      portMappings = var.ecs_config.ports
-      environment  = var.environmet_variables,
+      name             = "${var.app_name}-container",
+      image            = "${var.aws_account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.ecr_config.name}:latest",
+      essential        = true,
+      portMappings     = var.ecs_config.ports
+      environment      = local.task_environment_vars,
       logConfiguration = var.ecs_config.logConfiguration
     }
   ])
@@ -30,7 +31,7 @@ resource "aws_ecs_service" "order" {
   name            = "${var.app_name}-service"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.order.arn
-  desired_count   = 1
+  desired_count   = 0
 
   network_configuration {
     subnets          = aws_subnet.public[*].id

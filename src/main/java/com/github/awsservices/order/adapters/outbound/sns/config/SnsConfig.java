@@ -11,7 +11,7 @@ public class SnsConfig {
     @Bean
     public SnsClient snsClient() {
         return SnsClient.builder()
-                .region(Region.of(Region.SA_EAST_1.id()))
+                .region(Region.of(Region.US_EAST_1.id()))
                 .build();
     }
 }

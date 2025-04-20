@@ -23,19 +23,6 @@ variable "ecs_config" {
   }
 }
 
-variable "environmet_variables" {
-  default = [
-    {
-      name  = "AWS_REGION",
-      value = var.region
-    },
-    {
-      name  = "SNS_TOPIC_ARN",
-      value = aws_sns_topic.order.arn
-    }
-  ]
-}
-
 variable "schedulers_config" {
   default = {
     start_schedule ={
@@ -80,4 +67,8 @@ variable "ecr_config" {
       Name = "order-app"
     }
   }
+}
+
+variable "sns_name" {
+  default = "order-created-topic"
 }

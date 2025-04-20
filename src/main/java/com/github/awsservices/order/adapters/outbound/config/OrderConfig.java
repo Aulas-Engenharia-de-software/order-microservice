@@ -19,7 +19,7 @@ public class OrderConfig {
 
     @Bean
     public SnsPublisherPort eventPublisher(SnsClient snsClient) {
-        return new SnsPublisher(snsClient, snsProperties.getTopicName());
+        return new SnsPublisher(snsClient, snsProperties);
     }
 
     @Bean

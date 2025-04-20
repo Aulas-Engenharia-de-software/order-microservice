@@ -1,7 +1,8 @@
 package com.github.awsservices.order.adapters.inbound.rest;
 
-import com.github.awsservices.order.application.core.domain.OrderEvent;
-import com.github.awsservices.order.application.core.services.OrderService;
+import com.github.awsservices.order.application.core.domain.Order;
+import com.github.awsservices.order.application.core.ports.inbound.OrderServicePort;
+import com.github.awsservices.order.application.exceptions.PublishSnsMessageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -17,16 +18,28 @@ public class OrderController {
 
     private final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
-    private final OrderService orderService;
+    private final OrderServicePort orderServicePort;
 
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
+    public OrderController(OrderServicePort orderService) {
+        this.orderServicePort = orderService;
     }
 
     @PostMapping("/orders")
-    public ResponseEntity<Map<String, String>> createOrder(@RequestBody OrderEvent evento) {
-        logger.info("Iniciando processamento: {}", evento);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Pedido confirmado"));
+    public ResponseEntity<Map<String, String>> createOrder(@RequestBody Order order) {
+        try {
+            logger.info("Iniciando processamento da confirmação do pedido: {}", order);
+
+            orderServicePort.confirmOrder(order);
+
+            return ResponseEntity.ok(Collections.singletonMap("message", "Pedido confirmado"));
+
+        } catch (PublishSnsMessageException exception) {
+            return ResponseEntity
+                    .internalServerError()
+                    .body(Collections
+                            .singletonMap("message", "ocorreu um erro com esse pedido: " + exception.getMessage())
+                    );
+        }
     }
 
 }

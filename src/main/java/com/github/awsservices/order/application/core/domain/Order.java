@@ -2,7 +2,7 @@ package com.github.awsservices.order.application.core.domain;
 
 import java.util.List;
 
-public class OrderEvent {
+public class Order {
 
     private String orderId;
 

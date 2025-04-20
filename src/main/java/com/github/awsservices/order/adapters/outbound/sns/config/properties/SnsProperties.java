@@ -4,16 +4,17 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "sns")
+@ConfigurationProperties(prefix = "aws.sns")
 public class SnsProperties {
 
-    private String topicName;
+    private String topicArn;
 
-    public String getTopicName() {
-        return topicName;
+    public String getTopicArn() {
+        return topicArn;
     }
 
-    public void setTopicName(String topicName) {
-        this.topicName = topicName;
+    public void setTopicArn(String topicArn) {
+        this.topicArn = topicArn;
     }
+
 }

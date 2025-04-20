@@ -1,9 +1,15 @@
 package com.github.awsservices.order.application.core.services;
 
-import com.github.awsservices.order.application.core.domain.OrderEvent;
+import com.github.awsservices.order.application.core.domain.Order;
+import com.github.awsservices.order.application.core.ports.inbound.OrderServicePort;
 import com.github.awsservices.order.application.core.ports.outbound.SnsPublisherPort;
+import com.github.awsservices.order.application.exceptions.PublishSnsMessageException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class OrderService {
+public class OrderService implements OrderServicePort {
+
+    private final Logger logger = LoggerFactory.getLogger(OrderService.class);
 
     private final SnsPublisherPort snsPublisherPort;
 
@@ -11,7 +17,9 @@ public class OrderService {
         this.snsPublisherPort = snsPublisherPort;
     }
 
-    public void confirmOrder(OrderEvent orderEvent) {
-        snsPublisherPort.publish(orderEvent);
+    @Override
+    public void confirmOrder(Order order) throws PublishSnsMessageException {
+        logger.info("Iniciando confirmacao do pedido...");
+        snsPublisherPort.publish(order);
     }
 }

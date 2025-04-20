@@ -1,6 +1,6 @@
 resource "aws_sns_topic" "order" {
   name              = "order-created-topic"
-  display_name     = "Order Created Notifications"
+  display_name      = "Order Created Notifications"
   kms_master_key_id = "alias/aws/sns"  # Criptografia padrão
 
 }
