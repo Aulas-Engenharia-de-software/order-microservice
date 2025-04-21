@@ -12,7 +12,6 @@ public class Order {
 
     private List<Item> items;
 
-
     public String getOrderId() {
         return orderId;
     }

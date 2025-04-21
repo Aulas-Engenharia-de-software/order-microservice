@@ -1,4 +1,4 @@
-resource "aws_ecs_cluster" "main" {
+resource "aws_ecs_cluster" "ecs_cluster" {
   name = var.ecs_config.cluster_name
   setting {
     name  = "containerInsights"
@@ -6,7 +6,7 @@ resource "aws_ecs_cluster" "main" {
   }
 }
 
-resource "aws_ecs_task_definition" "order" {
+resource "aws_ecs_task_definition" "inventory_task_definition" {
   family                   = var.ecs_config.task_family
   network_mode             = "awsvpc"
   requires_compatibilities = [var.ecs_config.provider]
@@ -29,8 +29,8 @@ resource "aws_ecs_task_definition" "order" {
 
 resource "aws_ecs_service" "order" {
   name            = "${var.app_name}-service"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.order.arn
+  cluster         = aws_ecs_cluster.ecs_cluster.id
+  task_definition = aws_ecs_task_definition.inventory_task_definition.arn
   desired_count   = 0
 
   network_configuration {
@@ -100,7 +100,7 @@ resource "aws_scheduler_schedule" "start_producer" {
 
     input = jsonencode({
       Service      = aws_ecs_service.order.name,
-      Cluster      = aws_ecs_cluster.main.name,
+      Cluster      = aws_ecs_cluster.ecs_cluster.name,
       DesiredCount = var.schedulers_config.start_schedule.desired_count
     })
   }
@@ -119,7 +119,7 @@ resource "aws_scheduler_schedule" "stop_producer" {
 
     input = jsonencode({
       Service      = aws_ecs_service.order.name,
-      Cluster      = aws_ecs_cluster.main.name,
+      Cluster      = aws_ecs_cluster.ecs_cluster.name,
       DesiredCount = var.schedulers_config.stop_schedule.desired_count
     })
   }

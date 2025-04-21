@@ -19,11 +19,11 @@ resource "aws_iam_role" "sns_task_role" {
   name = "${var.app_name}-sns-task-role"
 
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
+    Version   = "2012-10-17"
     Statement = [
       {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
+        Action    = "sts:AssumeRole"
+        Effect    = "Allow"
         Principal = {
           Service = "ecs-tasks.amazonaws.com"
         }
@@ -37,7 +37,7 @@ resource "aws_iam_role_policy" "sns_publish_policy" {
   role = aws_iam_role.sns_task_role.id
 
   policy = jsonencode({
-    Version = "2012-10-17"
+    Version   = "2012-10-17"
     Statement = [
       {
         Action   = "sns:Publish"
@@ -74,3 +74,4 @@ resource "aws_iam_role_policy_attachment" "api_gateway_vpc_link" {
   role       = aws_iam_role.api_gateway.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess"
 }
+

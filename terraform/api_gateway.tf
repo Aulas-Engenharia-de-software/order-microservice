@@ -39,14 +39,12 @@ resource "aws_api_gateway_integration" "integration" {
   ]
 }
 
-# Resposta de sucesso (200)
 resource "aws_api_gateway_integration_response" "success" {
   rest_api_id = aws_api_gateway_rest_api.order.id
   resource_id = aws_api_gateway_resource.orders.id
   http_method = aws_api_gateway_method.post.http_method
   status_code = aws_api_gateway_method_response.response_200.status_code
 
-  # Se sua API retornar texto puro em vez de JSON
   response_templates = {
     "application/json" = <<EOF
     {
@@ -62,13 +60,12 @@ resource "aws_api_gateway_integration_response" "success" {
   depends_on = [aws_api_gateway_integration.integration]
 }
 
-# Resposta de erro (400)
 resource "aws_api_gateway_integration_response" "bad_request" {
   rest_api_id       = aws_api_gateway_rest_api.order.id
   resource_id       = aws_api_gateway_resource.orders.id
   http_method       = aws_api_gateway_method.post.http_method
   status_code       = aws_api_gateway_method_response.response_400.status_code
-  selection_pattern = "400"  # Padrão para capturar respostas 400 do backend
+  selection_pattern = "400"
 
   response_templates = {
     "application/json" = <<EOF
@@ -87,7 +84,6 @@ resource "aws_api_gateway_integration_response" "bad_request" {
   depends_on = [aws_api_gateway_integration.integration]
 }
 
-# Configuração para resposta 200
 resource "aws_api_gateway_method_response" "response_200" {
   rest_api_id = aws_api_gateway_rest_api.order.id
   resource_id = aws_api_gateway_resource.orders.id
@@ -103,7 +99,6 @@ resource "aws_api_gateway_method_response" "response_200" {
   }
 }
 
-# Configuração para resposta 400
 resource "aws_api_gateway_method_response" "response_400" {
   rest_api_id = aws_api_gateway_rest_api.order.id
   resource_id = aws_api_gateway_resource.orders.id

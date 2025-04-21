@@ -5,6 +5,7 @@ import com.github.awsservices.order.application.core.ports.inbound.OrderServiceP
 import com.github.awsservices.order.application.exceptions.PublishSnsMessageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 public class OrderController {
@@ -27,6 +29,7 @@ public class OrderController {
     @PostMapping("/orders")
     public ResponseEntity<Map<String, String>> createOrder(@RequestBody Order order) {
         try {
+            MDC.put("uuid", UUID.randomUUID().toString());
             logger.info("Iniciando processamento da confirmação do pedido: {}", order);
 
             orderServicePort.confirmOrder(order);
@@ -39,6 +42,8 @@ public class OrderController {
                     .body(Collections
                             .singletonMap("message", "ocorreu um erro com esse pedido: " + exception.getMessage())
                     );
+        } finally {
+            MDC.clear();
         }
     }
 

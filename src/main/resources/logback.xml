@@ -1,0 +1,35 @@
+<configuration>
+    <appender name="LOGSTASH" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <fieldName>@timestamp</fieldName>
+                    <pattern>ISO8601</pattern>
+                </timestamp>
+
+                <mdc>
+                    <fieldName>uuid</fieldName>
+                </mdc>
+
+                <message>
+                    <fieldName>message</fieldName>
+                    <pattern>{uuid} - %message</pattern>
+                </message>
+
+                <logLevel>
+                    <fieldName>level</fieldName>
+                </logLevel>
+                <threadName>
+                    <fieldName>thread</fieldName>
+                </threadName>
+                <loggerName>
+                    <fieldName>logger</fieldName>
+                </loggerName>
+            </providers>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="LOGSTASH" />
+    </root>
+</configuration>

@@ -26,12 +26,12 @@ variable "ecs_config" {
 variable "schedulers_config" {
   default = {
     start_schedule ={
-      name = "start_scheduler"
+      name = "start_order_service"
       expression = "cron(0 19 ? * MON,TUE,THU *)"
       desired_count = 1
     }
     stop_schedule ={
-      name = "stop_scheduler"
+      name = "stop_order_service"
       expression = "cron(0 20 ? * MON,TUE,THU *)"
       desired_count = 0
     }

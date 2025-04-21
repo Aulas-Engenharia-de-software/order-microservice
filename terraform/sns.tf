@@ -10,3 +10,9 @@ resource "aws_sns_topic_subscription" "email" {
   protocol  = "email"
   endpoint  = "lucasrodriguesmartins007@gmail.com"
 }
+
+resource "aws_sns_topic_subscription" "sqs" {
+  topic_arn = aws_sns_topic.order.arn
+  protocol  = "sqs"
+  endpoint  = aws_sqs_queue.order_created.arn
+}
