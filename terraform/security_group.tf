@@ -1,5 +1,5 @@
 resource "aws_security_group" "alb" {
-  name        = "${var.app_name}-alb-sg"
+  name        = "${local.ecs_service_name}-alb-sg"
   description = "Security group for ALB"
   vpc_id      = aws_vpc.main.id
 
@@ -18,12 +18,12 @@ resource "aws_security_group" "alb" {
   }
 
   tags = {
-    Name = "${var.app_name}-alb-sg"
+    Name = "${local.ecs_service_name}-alb-sg"
   }
 }
 
 resource "aws_security_group" "ecs" {
-  name        = "${var.app_name}-ecs-sg"
+  name        = "${local.ecs_service_name}-ecs-sg"
   description = "Security group for ECS tasks"
   vpc_id      = aws_vpc.main.id
 
@@ -35,7 +35,7 @@ resource "aws_security_group" "ecs" {
   }
 
   tags = {
-    Name = "${var.app_name}-ecs-sg"
+    Name = "${local.ecs_service_name}-ecs-sg"
   }
 }
 

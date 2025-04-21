@@ -1,35 +1,30 @@
 <configuration>
-    <appender name="LOGSTASH" class="ch.qos.logback.core.ConsoleAppender">
+    <contextName>orderservice</contextName>
+
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
                 <timestamp>
-                    <fieldName>@timestamp</fieldName>
-                    <pattern>ISO8601</pattern>
+                    <fieldName>timestamp</fieldName>
+                    <timeZone>UTC</timeZone>
                 </timestamp>
-
-                <mdc>
-                    <fieldName>uuid</fieldName>
-                </mdc>
-
-                <message>
-                    <fieldName>message</fieldName>
-                    <pattern>{uuid} - %message</pattern>
-                </message>
-
                 <logLevel>
                     <fieldName>level</fieldName>
                 </logLevel>
-                <threadName>
-                    <fieldName>thread</fieldName>
-                </threadName>
-                <loggerName>
-                    <fieldName>logger</fieldName>
-                </loggerName>
+                <mdc>
+                    <fieldName>uuid</fieldName>
+                </mdc>
+                <message>
+                    <fieldName>message</fieldName>
+                </message>
             </providers>
+            <customFields>{"component":"order-service"}</customFields>
         </encoder>
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="LOGSTASH" />
+        <appender-ref ref="JSON_CONSOLE"/>
     </root>
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="com.amazonaws" level="WARN"/>
 </configuration>

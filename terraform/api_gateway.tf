@@ -1,6 +1,6 @@
 resource "aws_api_gateway_rest_api" "order" {
-  name        = var.api_gateway_config.name
-  description = var.api_gateway_config.description
+  name        = local.api_gateway_name
+  description = "API para processamento de pedidos"
 }
 
 resource "aws_api_gateway_resource" "orders" {

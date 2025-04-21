@@ -1,5 +1,5 @@
 resource "aws_ecs_cluster" "ecs_cluster" {
-  name = var.ecs_config.cluster_name
+  name = local.ecs_cluster_name
   setting {
     name  = "containerInsights"
     value = "disabled"
@@ -7,28 +7,35 @@ resource "aws_ecs_cluster" "ecs_cluster" {
 }
 
 resource "aws_ecs_task_definition" "inventory_task_definition" {
-  family                   = var.ecs_config.task_family
+  family                   = local.task_family
   network_mode             = "awsvpc"
-  requires_compatibilities = [var.ecs_config.provider]
-  cpu                      = var.ecs_config.cpu
-  memory                   = var.ecs_config.memory
+  requires_compatibilities = [local.provider]
+  cpu                      = 256
+  memory                   = 512
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.sns_task_role.arn
 
   container_definitions = jsonencode([
     {
-      name             = "${var.app_name}-container",
-      image            = "${var.aws_account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.ecr_config.name}:latest",
+      name             = local.container_name,
+      image            = "${var.aws_account_id}.dkr.ecr.${var.region}.amazonaws.com/${local.ecr_image_name}:latest",
       essential        = true,
-      portMappings     = var.ecs_config.ports
+      portMappings     = local.ports
       environment      = local.task_environment_vars,
-      logConfiguration = var.ecs_config.logConfiguration
+      logConfiguration = {
+        logDriver = "awslogs",
+        options   = {
+          "awslogs-group"         = local.awslogs-group_name,
+          "awslogs-region"        = var.region,
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
     }
   ])
 }
 
 resource "aws_ecs_service" "order" {
-  name            = "${var.app_name}-service"
+  name            = local.ecs_service_name
   cluster         = aws_ecs_cluster.ecs_cluster.id
   task_definition = aws_ecs_task_definition.inventory_task_definition.arn
   desired_count   = 0
@@ -41,7 +48,7 @@ resource "aws_ecs_service" "order" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.ecs.arn
-    container_name   = "${var.app_name}-container"
+    container_name   = local.container_name
     container_port   = 8080
   }
 
@@ -49,7 +56,7 @@ resource "aws_ecs_service" "order" {
   deployment_maximum_percent         = 100
 
   capacity_provider_strategy {
-    capacity_provider = var.ecs_config.provider
+    capacity_provider = local.provider
     weight            = 1
   }
 }
@@ -126,6 +133,6 @@ resource "aws_scheduler_schedule" "stop_producer" {
 }
 
 resource "aws_cloudwatch_log_group" "order_service" {
-  name              = "/ecs/${var.app_name}"
+  name              = "/ecs/${local.ecs_service_name}"
   retention_in_days = 3
 }

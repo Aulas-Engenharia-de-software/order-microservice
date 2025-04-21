@@ -1,5 +1,5 @@
 resource "aws_lb" "ecs_alb" {
-  name               = "${var.app_name}-alb"
+  name               = "${local.ecs_service_name}-alb"
   internal           = false
   load_balancer_type = "application"
   subnets            = aws_subnet.public[*].id
@@ -13,7 +13,7 @@ resource "aws_lb" "ecs_alb" {
 }
 
 resource "aws_lb_target_group" "ecs" {
-  name        = "${var.app_name}-tg"
+  name        = "${local.ecs_service_name}-tg"
   port        = 8080
   protocol    = "HTTP"
   target_type = "ip"

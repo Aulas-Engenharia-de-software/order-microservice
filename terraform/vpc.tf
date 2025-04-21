@@ -3,25 +3,24 @@ resource "aws_vpc" "main" {
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
-    Name = "${var.app_name}-vpc"
+    Name = "${local.ecs_service_name}-vpc"
   }
 }
 
 resource "aws_subnet" "public" {
-  count                   = 2
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = cidrsubnet(aws_vpc.main.cidr_block, 8, count.index)
-  availability_zone       = data.aws_availability_zones.available.names[count.index]
-  map_public_ip_on_launch = true
+  cidr_block              = cidrsubnet(aws_vpc.main.cidr_block, 8, 0)
+  availability_zone       = data.aws_availability_zones.available.names[0]
+  map_public_ip_on_launch = false
   tags = {
-    Name = "${var.app_name}-public-${count.index}"
+    Name = "${local.ecs_service_name}-public"
   }
 }
 
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
   tags = {
-    Name = "${var.app_name}-igw"
+    Name = "${local.ecs_service_name}-igw"
   }
 }
 
@@ -32,12 +31,11 @@ resource "aws_route_table" "public" {
     gateway_id = aws_internet_gateway.gw.id
   }
   tags = {
-    Name = "${var.app_name}-public-rt"
+    Name = "${local.ecs_service_name}-public-rt"
   }
 }
 
 resource "aws_route_table_association" "public" {
-  count          = 2
-  subnet_id      = aws_subnet.public[count.index].id
+  subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.public.id
 }
