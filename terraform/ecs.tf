@@ -59,6 +59,7 @@ resource "aws_ecs_service" "order" {
     capacity_provider = local.provider
     weight            = 1
   }
+  depends_on = [aws_lb_listener.ecs]
 }
 
 

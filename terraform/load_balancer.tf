@@ -1,16 +1,16 @@
-resource "aws_lb" "ecs_alb" {
-  name               = "${local.ecs_service_name}-alb"
-  internal           = false
-  load_balancer_type = "application"
-  subnets            = aws_subnet.public[*].id
-  security_groups    = [aws_security_group.alb.id]
+  resource "aws_lb" "ecs_alb" {
+    name               = "${local.ecs_service_name}-alb"
+    internal           = false
+    load_balancer_type = "application"
+    subnets            = aws_subnet.public[*].id
+    security_groups    = [aws_security_group.alb.id]
 
-  enable_deletion_protection = false
+    enable_deletion_protection = false
 
-  tags = {
-    Environment = "production"
+    tags = {
+      Environment = "production"
+    }
   }
-}
 
 resource "aws_lb_target_group" "ecs" {
   name        = "${local.ecs_service_name}-tg"

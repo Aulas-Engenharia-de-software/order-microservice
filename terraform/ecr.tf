@@ -11,7 +11,7 @@ resource "aws_ecr_repository" "order_app" {
 }
 
 resource "aws_ecr_lifecycle_policy" "order_app_policy" {
-  repository = "${local.ecr_image_name}-policy"
+  repository = local.ecr_image_name
   policy     = jsonencode({
     rules = [
       {

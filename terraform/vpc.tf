@@ -8,9 +8,15 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_subnet" "public" {
+  count                   = 2  # Must be at least 2
   vpc_id                  = aws_vpc.main.id
+  cidr_block              = element(["10.0.1.0/24", "10.0.2.0/24"], count.index)
+  availability_zone       = element(["us-east-1a", "us-east-1b"], count.index)
+
+  /*vpc_id                  = aws_vpc.main.id
   cidr_block              = cidrsubnet(aws_vpc.main.cidr_block, 8, 0)
-  availability_zone       = data.aws_availability_zones.available.names[0]
+  availability_zone       = data.aws_availability_zones.available.names[0]*/
+
   map_public_ip_on_launch = false
   tags = {
     Name = "${local.ecs_service_name}-public"
@@ -36,6 +42,7 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table_association" "public" {
-  subnet_id      = aws_subnet.public.id
+  count          = length(aws_subnet.public)
+  subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public.id
 }
